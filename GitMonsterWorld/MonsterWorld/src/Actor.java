@@ -32,6 +32,7 @@ class Actor implements iActor
 	{
 		return displayImage;
 	}
+	
 
 	public int getX() {return x;}
 
@@ -40,4 +41,5 @@ class Actor implements iActor
 	int x;
 	int y;
 	Image displayImage;
+	
 }

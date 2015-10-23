@@ -27,7 +27,6 @@ public class WorldGrid extends JPanel
 		this.height = height;
 		actors = new ActorGrid();
 		initComponents();
-		actors.add(new Rock(0,0));
 	}
 
 	public Dimension getPreferredSize() { return new Dimension(width * 48, height * 48); }
@@ -66,7 +65,7 @@ public class WorldGrid extends JPanel
 
 		//Draw all actors in list
 		for (Actor a : actors)
-		{ g2.drawImage(a.getImage(), a.getX()*48, a.getY()*48, null); }
+		{ g2.drawImage(a.getImage(), a.getX()*48, a.getY()*48, null);}
 	}
 
 	//right-click drop down menu
@@ -267,6 +266,7 @@ public class WorldGrid extends JPanel
 
 	private int xMouse = 0, yMouse = 0; //(x,y) location of mouse on screen
 
+	//Translates into number of rows and columns
 	private int width;
 	private int height;
 

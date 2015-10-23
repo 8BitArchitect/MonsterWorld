@@ -1,5 +1,5 @@
 
-public class Human extends Actor
+public class Human extends Being
 {
 
 	//Creates human object with the position
@@ -8,12 +8,15 @@ public class Human extends Actor
 	public Human(int x, int y)
 	{
 		super(x, y, IMG_LOC);
+		this.setType("Human");
+		faceLeft();
 	}
 
 	//Creates a human at the default location (0,0)
 	public Human()
 	{
 		super(0, 0, IMG_LOC);
+		this.setType("Human");
 	}
 
 	//String containing path to human-front.gif

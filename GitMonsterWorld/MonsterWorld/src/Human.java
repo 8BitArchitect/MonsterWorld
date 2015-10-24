@@ -8,15 +8,14 @@ public class Human extends Being
 	public Human(int x, int y)
 	{
 		super(x, y, IMG_LOC);
-		this.setType("Human");
-		faceLeft();
+		setType("Human");
 	}
 
 	//Creates a human at the default location (0,0)
 	public Human()
 	{
 		super(0, 0, IMG_LOC);
-		this.setType("Human");
+		setType("Human");
 	}
 
 	//String containing path to human-front.gif

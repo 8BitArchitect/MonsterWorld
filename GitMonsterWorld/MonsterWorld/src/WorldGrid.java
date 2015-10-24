@@ -32,7 +32,14 @@ public class WorldGrid extends JPanel
 	public Dimension getPreferredSize() { return new Dimension(width * 48, height * 48); }
 
 	//Add an actor to the list
-	public void addActor(Actor newActor){actors.add(newActor);}
+	public void addActor(Actor newActor)
+	{
+		actors.add(newActor);
+		Graphics g = super.getGraphics();
+		Graphics2D g2 = (Graphics2D) g;
+		g2.drawImage(newActor.getImage(), newActor.getX()*48, newActor.getY()*48, null);
+		repaint();
+	}
 
 	public boolean isRunning(){return running;}
 
@@ -75,8 +82,7 @@ public class WorldGrid extends JPanel
 		popupMenu.add(drawHumanJMenu);
 		popupMenu.add(drawVampireJMenu);
 		popupMenu.add(drawZombieJMenu);
-		add(popupMenu);
-
+		
 		addMouseListener(new MouseListener()
 		{
 			public void mouseClicked(MouseEvent e)
@@ -91,7 +97,7 @@ public class WorldGrid extends JPanel
 					removeActor(xMouse, yMouse);
 				}
 
-				checkForTriggerEvent(e);
+				checkForTriggerEvent(e);	
 			}
 
 			//Open drop down window when RightClick
@@ -113,7 +119,7 @@ public class WorldGrid extends JPanel
 
 			public void mouseReleased(MouseEvent e) {}
 		});
-
+		
 		//Draw Rock at mouse location
 		drawRockJMenu.addActionListener(new ActionListener()
 		{
@@ -170,6 +176,8 @@ public class WorldGrid extends JPanel
 			if(a.getX() == x && a.getY() == y)
 				iter.remove();
 		}
+		
+		repaint();
 	}
 
 	//Check to see if (x,y) contains an actor

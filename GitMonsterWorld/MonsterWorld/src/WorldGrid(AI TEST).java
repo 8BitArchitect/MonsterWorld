@@ -56,6 +56,21 @@ public class WorldGrid extends JPanel
 			runGameLoop();
 	}
 	
+	private void findAndMove(Being thisBeing, Actor targetActor)
+	{
+		int xExit = targetActor.getGridX();
+		int yExit = targetActor.getGridY();
+		
+		if(xExit < thisBeing.getGridX())
+			thisBeing.move(-1, 0);
+		else if(xExit > thisBeing.getGridX())
+			thisBeing.move(1, 0);
+		else if(yExit < thisBeing.getGridY())
+			thisBeing.move(0, -1);
+		else if(yExit > thisBeing.getGridY())
+			thisBeing.move(0, 1);
+	}
+	
 	public void update()
 	{
 		for(Actor a : actors)
@@ -75,29 +90,8 @@ public class WorldGrid extends JPanel
 						{
 							if(b.getClass().toString().contains("Exit"))
 							{
-								xExit = b.getGridX();
-								yExit = b.getGridY();
+								findAndMove((Being)a, b);
 								
-								if(a.getGridX() == xExit && a.getGridY() == yExit)
-								{
-									try {
-										Thread.sleep(100);
-									} catch (InterruptedException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
-									removeActor(a.getGridX(), a.getGridY());
-									//addActor(new Exit(xExit, yExit));
-								}
-								
-								else if(xExit < a.getGridX())
-									((Being)a).move(-1, 0);
-								else if(xExit > a.getGridX())
-									((Being)a).move(1, 0);
-								else if(yExit < a.getGridY())
-									((Being)a).move(0, -1);
-								else if(yExit > a.getGridY())
-									((Being)a).move(0, 1);
 							}
 						}
 					}
@@ -113,17 +107,7 @@ public class WorldGrid extends JPanel
 						{
 							if(b.getClass().toString().contains("Human"))
 							{
-								xHuman = b.getGridX();
-								yHuman = b.getGridY();
-								
-								if(xHuman < a.getGridX())
-									((Being)a).move(-1, 0);
-								else if(xHuman > a.getGridX())
-									((Being)a).move(1, 0);
-								else if(yHuman < a.getGridY())
-									((Being)a).move(0, -1);
-								else if(yHuman > a.getGridY())
-									((Being)a).move(0, 1);
+								findAndMove((Being)a, b);
 							}
 						}
 					}

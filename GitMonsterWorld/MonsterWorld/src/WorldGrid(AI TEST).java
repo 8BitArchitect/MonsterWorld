@@ -56,41 +56,20 @@ public class WorldGrid extends JPanel
 		if (isRunning())
 			runGameLoop();
 	}
-	
-	private boolean isRock(int x, int y)
-	{
-		Iterator<Actor> iter = actors.iterator();
-
-		//Check each actors location in the Grid to
-		// see if their location matches the one being looked at
-		while(iter.hasNext())
-		{
-			Actor a = iter.next();
-
-			if(a.getGridX() == x && a.getGridY() == y &&
-					a.getClass().toString().contains("Rock"))
-				return true;
-		}
-		return false;
-	}
 
 	//Move being towards target Actor
 	private void findAndMove(Being thisBeing, Actor targetActor)
 	{
 		int xExit = targetActor.getGridX();
 		int yExit = targetActor.getGridY();
-	   
-		if(xExit < thisBeing.getGridX() && 
-				!isRock((thisBeing.getGridX() - 1), thisBeing.getGridY()))
+
+		if(xExit < thisBeing.getGridX())
 			thisBeing.move(-1, 0);
-		else if(xExit > thisBeing.getGridX() && 
-				!isRock((thisBeing.getGridX() + 1), thisBeing.getGridY()))
+		else if(xExit > thisBeing.getGridX())
 			thisBeing.move(1, 0);
-		else if(yExit < thisBeing.getGridY() && 
-				!isRock(thisBeing.getGridX(), (thisBeing.getGridY() - 1)))
+		else if(yExit < thisBeing.getGridY())
 			thisBeing.move(0, -1);
-		else if(yExit > thisBeing.getGridY() && 
-				!isRock(thisBeing.getGridX(), (thisBeing.getGridY() + 1)))
+		else if(yExit > thisBeing.getGridY())
 			thisBeing.move(0, 1);
 
 		thisBeing.lastUpdate = System.nanoTime();
@@ -148,15 +127,11 @@ public class WorldGrid extends JPanel
 								((Being)a).getType().equals("Zombie"))
 						{
 							//Look for human
-							Iterator<Actor> iterB = test.iterator();
-							if(iterB.hasNext())
+							for(Actor b : actors)
 							{
-								while(iterB.hasNext()){
-									Actor b = iterB.next();
-									if(b.getClass().toString().contains("Human"))
-									{
-										findAndMove((Being)a, b);
-									}
+								if(b.getClass().toString().contains("Human"))
+								{
+									findAndMove((Being)a, b);
 								}
 							}
 						}

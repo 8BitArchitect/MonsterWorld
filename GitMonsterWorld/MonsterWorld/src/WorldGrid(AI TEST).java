@@ -56,6 +56,7 @@ public class WorldGrid extends JPanel
 			runGameLoop();
 	}
 	
+	//Move being towards target Actor
 	private void findAndMove(Being thisBeing, Actor targetActor)
 	{
 		int xExit = targetActor.getGridX();
@@ -83,8 +84,6 @@ public class WorldGrid extends JPanel
 					//Human AI
 					if(((Being)a).getType().equals("Human"))
 					{
-						int xExit;
-						int yExit;
 						//Look for Exit
 						for(Actor b : actors)
 						{
@@ -100,8 +99,6 @@ public class WorldGrid extends JPanel
 					if(((Being)a).getType().equals("Vampire") ||
 						((Being)a).getType().equals("Zombie"))
 					{
-						int xHuman;
-						int yHuman;
 						//Look for human
 						for(Actor b : actors)
 						{

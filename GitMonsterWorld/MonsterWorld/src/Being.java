@@ -5,11 +5,13 @@ public abstract class Being extends Actor
 	public Being()
 	{
 		super();
+		lastUpdate = System.nanoTime();
 	}
 	
 	public Being(int x, int y, String fileName)
 	{
 		super(x, y, fileName);
+		lastUpdate = System.nanoTime();
 	}
 
 	public String getType()
@@ -67,4 +69,5 @@ public abstract class Being extends Actor
 	}
 
 	private String type;
+	public double lastUpdate;
 }

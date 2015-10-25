@@ -42,7 +42,7 @@ public class WorldGrid extends JPanel
 		repaint();
 	}
 
-	public boolean isRunning(){return running;}
+	public boolean isRunning(){ return running; }
 
 	//Used in gameLoop() stuff
 	public void setInterpolation(float interp)
@@ -54,6 +54,22 @@ public class WorldGrid extends JPanel
 		toggleRunning();
 		if (isRunning())
 			runGameLoop();
+	}
+	
+	public void update()
+	{
+		for(Actor a : actors)
+		{
+			if(!a.getClass().toString().contains("Rock") &&
+				!a.getClass().toString().contains("Exit"))
+			{
+				if(System.nanoTime() - ((Being)a).lastUpdate > 2000000000)
+				{
+					((Being)a).move(0, -1);
+					((Being)a).lastUpdate = System.nanoTime();
+				}
+			}
+		}
 	}
 
 	public void paintComponent(Graphics g)
@@ -252,15 +268,7 @@ public class WorldGrid extends JPanel
 				//This is where we will check all actors for action queue
 				lastUpdateTime += TIME_BETWEEN_UPDATES;
 				updateCount++;
-				for(Actor a : actors)
-				{
-					if(!a.getClass().toString().contains("Rock") &&
-						!a.getClass().toString().contains("Exit"))
-					{
-						((Being)a).move(1, 0);
-						
-					}
-				}
+				update();
 			}
 
 			//Account for CPU lag

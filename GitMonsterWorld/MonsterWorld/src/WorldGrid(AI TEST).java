@@ -72,12 +72,21 @@ public class WorldGrid extends JPanel
 		else if(yExit > thisBeing.getGridY())
 			thisBeing.move(0, 1);
 
+		thisBeing.lastUpdate = System.nanoTime();
+
+		//If human on exit, remove human
 		if(thisBeing.getType().equals("Human"))
 		{
 			if(thisBeing.getGridX() == xExit && thisBeing.getGridY() == yExit)
-			{
 				removeActor(thisBeing);
-			}
+		}
+
+		//if monster on human, remove human
+		if(thisBeing.getType().equals("Vampire") ||
+				thisBeing.getType().equals("Zombie"))
+		{
+			if(thisBeing.getGridX() == xExit && thisBeing.getGridY() == yExit)
+				removeActor(targetActor);
 		}
 	}
 
@@ -126,7 +135,7 @@ public class WorldGrid extends JPanel
 								}
 							}
 						}
-						//((Being)a).lastUpdate = System.nanoTime();
+
 					}
 				}
 			}

@@ -65,7 +65,8 @@ public class WorldGrid extends JPanel
 			{
 				if(System.nanoTime() - ((Being)a).lastUpdate > 2000000000)
 				{
-					((Being)a).move(0, -1);
+					//((Being)a).move(0, -1);
+					((Being)a).tick();
 					((Being)a).lastUpdate = System.nanoTime();
 				}
 			}

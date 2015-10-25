@@ -1,3 +1,14 @@
+import java.util.Random;
+
+enum AIState
+{
+	Hide, Hunt, Idle, Escape
+}
+
+enum Direction
+{
+	Back, Right, Front, Left
+}
 
 public abstract class Being extends Actor
 {
@@ -6,12 +17,18 @@ public abstract class Being extends Actor
 	{
 		super();
 		lastUpdate = System.nanoTime();
+		rnd = new Random(System.nanoTime());
+		nextUpdate = System.nanoTime();
+		state = AIState.Idle;
 	}
 	
 	public Being(int x, int y, String fileName)
 	{
 		super(x, y, fileName);
 		lastUpdate = System.nanoTime();
+		rnd = new Random(System.nanoTime());
+		nextUpdate = System.nanoTime();
+		state = AIState.Idle;
 	}
 
 	public String getType()
@@ -67,7 +84,54 @@ public abstract class Being extends Actor
 	public void faceDown() {
 		setImage("src/images/" + this.getType() + "-front.gif");
 	}
+	
+	public void moveDir(Direction dir)
+	{
+		int OrigX = getGridX();
+		int OrigY = getGridY();
+		int x = (dir.ordinal()-2) % 2;
+		int y = (dir.ordinal()-1) % 2;
+		int xTarget = OrigX + x;
+		int yTarget = OrigY + y;
+		int xDelta;
+		int yDelta;
+		
+		faceDir(dir);
 
+		//Move image on screen until theoretical grid
+		//	coordinates sync
+		while(getGridX() != xTarget || getGridY() != yTarget)
+		{
+			xDelta = getScreenX() + x;
+			yDelta = getScreenY() + y;
+			setPos(xDelta, yDelta);
+		}
+	}
+	
+	public void faceDir(Direction dir)
+	{
+		setImage("src/images/" + this.getType() + "-" + dir.name() + ".gif");
+	}
+	
+	public void tick()
+	{
+		if (System.nanoTime()>=nextUpdate)
+		{
+			nextUpdate = System.nanoTime() + rnd.nextLong() % 6;
+			switch (state)
+			{
+			case Hunt:
+			case Hide:
+			case Escape:
+			case Idle:
+				moveDir(Direction.values()[rnd.nextInt()%4]);
+			}
+		}
+	}
+
+	private Random rnd;
+	private long nextUpdate;
+	private AIState state;
 	private String type;
 	public double lastUpdate;
 }

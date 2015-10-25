@@ -1,5 +1,15 @@
 import java.util.Random;
 
+enum AIState
+{
+	Hide, Hunt, Idle, Escape
+}
+
+enum Direction
+{
+	Back, Right, Front, Left
+}
+
 public abstract class Being extends Actor
 {
 

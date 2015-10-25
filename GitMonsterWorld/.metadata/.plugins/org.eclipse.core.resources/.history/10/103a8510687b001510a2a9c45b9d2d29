@@ -64,13 +64,13 @@ public class WorldGrid extends JPanel
 		int yExit = targetActor.getGridY();
 
 		if(xExit < thisBeing.getGridX())
-			thisBeing.moveDir(Direction.Left);
+			thisBeing.move(-1, 0);
 		else if(xExit > thisBeing.getGridX())
-			thisBeing.moveDir(Direction.Right);
+			thisBeing.move(1, 0);
 		else if(yExit < thisBeing.getGridY())
-			thisBeing.moveDir(Direction.Back);
+			thisBeing.move(0, -1);
 		else if(yExit > thisBeing.getGridY())
-			thisBeing.moveDir(Direction.Front);
+			thisBeing.move(0, 1);
 
 		thisBeing.lastUpdate = System.nanoTime();
 

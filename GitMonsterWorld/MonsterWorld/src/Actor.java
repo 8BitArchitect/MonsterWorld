@@ -6,21 +6,27 @@ class Actor implements iActor
 {
 	public Actor()
 	{
-		x = y = 0;
+		xGrid = yGrid = xScreen = yScreen = 0;
 		displayImage = new ImageIcon("src/images/default.gif").getImage();
 	}
 
 	public Actor(int x, int y, String filename)
 	{
-		this.x = x;
-		this.y = y;
+		xGrid = x;
+		yGrid = y;
+		xScreen = x * 48;
+		yScreen = y * 48;
 		displayImage = new ImageIcon(filename).getImage();
 	}
 
 	public void setPos(int x, int y)
 	{
-		this.x = x;
-		this.y = y;
+		//this.xGrid = x;
+		//this.yGrid = y;
+		xScreen = x;
+		yScreen = y;
+		xGrid = x / 48;
+		yGrid = y / 48;
 	}
 
 	public void setImage(String filename)
@@ -32,12 +38,20 @@ class Actor implements iActor
 	{
 		return displayImage;
 	}
+	
 
-	public int getX() {return x;}
+	public int getGridX() {return xGrid;}
 
-	public int getY() {return y;}
+	public int getGridY() {return yGrid;}
+	
+	public int getScreenY() {return yScreen;}
+	
+	public int getScreenX() {return xScreen;}
 
-	int x;
-	int y;
+	int xGrid;
+	int yGrid;
+	int xScreen;
+	int yScreen;
 	Image displayImage;
+	
 }

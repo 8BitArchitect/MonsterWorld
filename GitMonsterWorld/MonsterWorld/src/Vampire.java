@@ -1,5 +1,5 @@
 
-public class Vampire extends Monster
+public class Vampire extends Actor
 {
 	//Creates vampire object with the position
 	//	of the vampire being instantiated with
@@ -7,15 +7,12 @@ public class Vampire extends Monster
 	public Vampire(int x, int y)
 	{
 		super(x, y, IMG_LOC);
-		this.setType("Vampire");
-		
 	}
 
 	//Creates a vampire at the default location (0,0)
 	public Vampire()
 	{
 		super(0, 0, IMG_LOC);
-		this.setType("Vampire");
 	}
 
 	//String containing path to vampire-front.gif

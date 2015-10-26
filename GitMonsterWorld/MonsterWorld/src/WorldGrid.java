@@ -27,26 +27,17 @@ public class WorldGrid extends JPanel
 		this.height = height;
 		actors = new ActorGrid();
 		initComponents();
+		actors.add(new Rock(0,0));
 	}
 
-	public Dimension getPreferredSize()
-	{ return new Dimension(width * 48, height * 48); }
+	public Dimension getPreferredSize() { return new Dimension(width * 48, height * 48); }
 
-	//Add an actor to the list and force it to be painted
-	public void addActor(Actor newActor)
-	{
-		actors.add(newActor);
-		Graphics g = super.getGraphics();
-		Graphics2D g2 = (Graphics2D) g;
-		g2.drawImage(newActor.getImage(), newActor.getScreenX(), newActor.getScreenY(), null);
-		repaint();
-	}
+	//Add an actor to the list
+	public void addActor(Actor newActor){actors.add(newActor);}
 
-	public boolean isRunning(){ return running; }
+	public boolean isRunning(){return running;}
 
-	//Used in gameLoop() stuff
-	public void setInterpolation(float interp)
-	{ interpolation = interp; }
+	public void setInterpolation(float interp){interpolation = interp;}
 
 	// Start or stop gameLoop
 	public void pressedStart()
@@ -54,22 +45,6 @@ public class WorldGrid extends JPanel
 		toggleRunning();
 		if (isRunning())
 			runGameLoop();
-	}
-	
-	public void update()
-	{
-		for(Actor a : actors)
-		{
-			if(!a.getClass().toString().contains("Rock") &&
-				!a.getClass().toString().contains("Exit"))
-			{
-				if(System.nanoTime() - ((Being)a).lastUpdate > 2000000000)
-				{
-					((Being)a).move(0, -1);
-					((Being)a).lastUpdate = System.nanoTime();
-				}
-			}
-		}
 	}
 
 	public void paintComponent(Graphics g)
@@ -91,7 +66,7 @@ public class WorldGrid extends JPanel
 
 		//Draw all actors in list
 		for (Actor a : actors)
-		{ g2.drawImage(a.getImage(), a.getScreenX(), a.getScreenY(), null);}
+		{ g2.drawImage(a.getImage(), a.getX()*48, a.getY()*48, null); }
 	}
 
 	//right-click drop down menu
@@ -101,8 +76,8 @@ public class WorldGrid extends JPanel
 		popupMenu.add(drawHumanJMenu);
 		popupMenu.add(drawVampireJMenu);
 		popupMenu.add(drawZombieJMenu);
-		popupMenu.add(drawExitJMenu);
-		
+		add(popupMenu);
+
 		addMouseListener(new MouseListener()
 		{
 			public void mouseClicked(MouseEvent e)
@@ -117,7 +92,7 @@ public class WorldGrid extends JPanel
 					removeActor(xMouse, yMouse);
 				}
 
-				checkForTriggerEvent(e);	
+				checkForTriggerEvent(e);
 			}
 
 			//Open drop down window when RightClick
@@ -139,7 +114,7 @@ public class WorldGrid extends JPanel
 
 			public void mouseReleased(MouseEvent e) {}
 		});
-		
+
 		//Draw Rock at mouse location
 		drawRockJMenu.addActionListener(new ActionListener()
 		{
@@ -179,15 +154,6 @@ public class WorldGrid extends JPanel
 					addActor(new Zombie((xMouse / 48), (yMouse / 48)));
 			}
 		});
-		
-		drawExitJMenu.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				if(isEmpty((xMouse / 48), (yMouse / 48)))
-					addActor(new Exit((xMouse / 48), (yMouse / 48)));
-			}
-		});
 	}
 
 	//Remove an actor at location (x,y)
@@ -202,11 +168,9 @@ public class WorldGrid extends JPanel
 		{
 			Actor a = iter.next();
 
-			if(a.getGridX() == x && a.getGridY() == y)
+			if(a.getX() == x && a.getY() == y)
 				iter.remove();
 		}
-		
-		repaint();
 	}
 
 	//Check to see if (x,y) contains an actor
@@ -220,7 +184,7 @@ public class WorldGrid extends JPanel
 		{
 			Actor a = iter.next();
 
-			if(a.getGridX() == x && a.getGridY() == y)
+			if(a.getX() == x && a.getY() == y)
 				return false;
 		}
 
@@ -268,7 +232,6 @@ public class WorldGrid extends JPanel
 				//This is where we will check all actors for action queue
 				lastUpdateTime += TIME_BETWEEN_UPDATES;
 				updateCount++;
-				update();
 			}
 
 			//Account for CPU lag
@@ -298,14 +261,12 @@ public class WorldGrid extends JPanel
 	private final JMenuItem drawHumanJMenu = new JMenuItem("Draw Human here");
 	private final JMenuItem drawVampireJMenu = new JMenuItem("Draw Vampire here");
 	private final JMenuItem drawZombieJMenu = new JMenuItem("Draw Zombie here");
-	private final JMenuItem drawExitJMenu = new JMenuItem("Draw Exit here");
 
 	public float interpolation;	//time stuff
 	private boolean running = false; //is the game currently active?
 
 	private int xMouse = 0, yMouse = 0; //(x,y) location of mouse on screen
 
-	//Translates into number of rows and columns
 	private int width;
 	private int height;
 

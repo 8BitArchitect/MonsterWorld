@@ -1,5 +1,5 @@
 
-public class Zombie extends Monster
+public class Zombie extends Actor
 {
 	//Creates zombie object with the position
 	//	of the zombie being instantiated with
@@ -7,14 +7,12 @@ public class Zombie extends Monster
 	public Zombie(int x, int y)
 	{
 		super(x, y, IMG_LOC);
-		this.setType("Zombie");
 	}
 
 	//Creates a zombie at the default location (0,0)
 	public Zombie()
 	{
 		super(0, 0, IMG_LOC);
-		this.setType("Zombie");
 	}
 
 	//String containing path to zombie-front.gif

@@ -2,6 +2,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
+import java.util.ArrayList;
 import java.util.Iterator;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -55,18 +56,87 @@ public class WorldGrid extends JPanel
 		if (isRunning())
 			runGameLoop();
 	}
-	
+
+	//Move being towards target Actor
+	private void findAndMove(Being thisBeing, Actor targetActor)
+	{
+		int xExit = targetActor.getGridX();
+		int yExit = targetActor.getGridY();
+
+		if(xExit < thisBeing.getGridX())
+			thisBeing.moveDir(Direction.Left);
+		else if(xExit > thisBeing.getGridX())
+			thisBeing.moveDir(Direction.Right);
+		else if(yExit < thisBeing.getGridY())
+			thisBeing.moveDir(Direction.Back);
+		else if(yExit > thisBeing.getGridY())
+			thisBeing.moveDir(Direction.Front);
+
+		thisBeing.lastUpdate = System.nanoTime();
+
+		//If human on exit, remove human
+		if(thisBeing.getType().equals("Human"))
+		{
+			if(thisBeing.getGridX() == xExit && thisBeing.getGridY() == yExit)
+				removeActor(thisBeing);
+		}
+
+		//if monster on human, remove human
+		if(thisBeing.getType().equals("Vampire") ||
+				thisBeing.getType().equals("Zombie"))
+		{
+			if(thisBeing.getGridX() == xExit && thisBeing.getGridY() == yExit)
+				removeActor(targetActor);
+		}
+	}
+
 	public void update()
 	{
-		for(Actor a : actors)
+		ActorGrid test = new ActorGrid();
+		test = (ActorGrid)actors.clone();
+		Iterator<Actor> iter = test.iterator();
+		while(iter.hasNext())
 		{
-			if(!a.getClass().toString().contains("Rock") &&
-				!a.getClass().toString().contains("Exit"))
-			{
-				if(System.nanoTime() - ((Being)a).lastUpdate > 2000000000)
+			if(iter.hasNext()){
+				Actor a = iter.next();
+				if(!a.getClass().toString().contains("Rock") &&
+						!a.getClass().toString().contains("Exit"))
 				{
-					((Being)a).move(0, -1);
-					((Being)a).lastUpdate = System.nanoTime();
+					if(System.nanoTime() - ((Being)a).lastUpdate > 2000000000)
+					{
+						//Human AI
+						if(((Being)a).getType().equals("Human"))
+						{
+							//Look for Exit
+							Iterator<Actor> iterB = test.iterator();
+							if(iterB.hasNext())
+							{
+								while(iterB.hasNext()){
+									Actor b = iterB.next();
+									if(b.getClass().toString().contains("Exit"))
+									{
+										findAndMove((Being)a, b);
+
+									}
+								}
+							}
+						}
+
+						//Monster AI
+						else if(((Being)a).getType().equals("Vampire") ||
+								((Being)a).getType().equals("Zombie"))
+						{
+							//Look for human
+							for(Actor b : actors)
+							{
+								if(b.getClass().toString().contains("Human"))
+								{
+									findAndMove((Being)a, b);
+								}
+							}
+						}
+
+					}
 				}
 			}
 		}
@@ -102,7 +172,7 @@ public class WorldGrid extends JPanel
 		popupMenu.add(drawVampireJMenu);
 		popupMenu.add(drawZombieJMenu);
 		popupMenu.add(drawExitJMenu);
-		
+
 		addMouseListener(new MouseListener()
 		{
 			public void mouseClicked(MouseEvent e)
@@ -139,7 +209,7 @@ public class WorldGrid extends JPanel
 
 			public void mouseReleased(MouseEvent e) {}
 		});
-		
+
 		//Draw Rock at mouse location
 		drawRockJMenu.addActionListener(new ActionListener()
 		{
@@ -179,7 +249,7 @@ public class WorldGrid extends JPanel
 					addActor(new Zombie((xMouse / 48), (yMouse / 48)));
 			}
 		});
-		
+
 		drawExitJMenu.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -190,22 +260,43 @@ public class WorldGrid extends JPanel
 		});
 	}
 
+	private void removeActor(Actor a)
+	{
+		Iterator<Actor> iter = actors.iterator();
+		while(iter.hasNext())
+		{
+			Actor b = iter.next();
+			if(b.equals(a))
+				iter.remove();
+		}
+		repaint();
+	}
 	//Remove an actor at location (x,y)
 	private void removeActor(int x, int y)
 	{
-		Iterator<Actor> iter = actors.iterator();
+		ArrayList<Actor> toRemove = new ArrayList<Actor>();
 
-		//Checks each actor for their location
-		//	if their location matches the location
-		//	being searched for, remove that actor
-		while(iter.hasNext())
+		for(Actor a : actors)
 		{
-			Actor a = iter.next();
-
 			if(a.getGridX() == x && a.getGridY() == y)
-				iter.remove();
+				toRemove.add(a);
 		}
-		
+
+		actors.removeAll(toRemove);
+
+		//		Iterator<Actor> iter = actors.iterator();
+		//
+		//		//Checks each actor for their location
+		//		//	if their location matches the location
+		//		//	being searched for, remove that actor
+		//		while(iter.hasNext())
+		//		{
+		//			Actor a = iter.next();
+		//
+		//			if(a.getGridX() == x && a.getGridY() == y)
+		//				iter.remove();
+		//		}
+
 		repaint();
 	}
 
@@ -288,6 +379,7 @@ public class WorldGrid extends JPanel
 				now = System.nanoTime();
 			}
 		}
+
 	}
 
 	private void toggleRunning(){ running = !running; }
